@@ -1,3 +1,29 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# An experimental Spotify Data Explorer
+#
+# Copyright (C) Bitergia
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+# Authors:
+#   Alvaro del Castillo San Felix <acs@bitergia.com>
+#
+
+
 import json
 import os
 import requests
@@ -17,6 +43,9 @@ TOKEN = 'token'
 TOKEN_LIB = 'token-lib'
 TOKEN_HISTORY = 'token-history'
 TOKEN_TOP = 'token-top'
+
+# TODO
+# Explore search API: https://api.spotify.com/v1/search?type=track&q=artist:ArtistName
 
 
 def collect_tokens(user):
@@ -55,13 +84,12 @@ def collect_tokens(user):
     return token
 
 
-
 def find_playlists(token):
     """
     Get the playlists for the user
 
     :param token: user token for getting her playlists
-    :return: 
+    :return:
     """
     headers = {"Authorization": "Bearer %s" % token}
 
@@ -89,9 +117,9 @@ def find_recently_played(token_history):
 
     recent_tracks = res.json()
 
-
     for track in recent_tracks['items']:
         print(track['track'], ":", ['name'], track['track']['artists'][0]['name'])
+
 
 def find_tops(token_top, kind='tracks'):
     """
@@ -115,4 +143,3 @@ if __name__ == '__main__':
     token = collect_tokens(SPOTIFY_USER)
     find_tops(token)
     find_recently_played(token)
-
