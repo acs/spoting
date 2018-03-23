@@ -35,17 +35,10 @@ SPOTIFY_API = 'https://api.spotify.com/v1'
 SPOTIFY_API_ME = SPOTIFY_API + '/me'
 SPOTIFY_USER = 'acsspotify'
 SCOPES = 'user-library-read,user-read-recently-played,user-top-read'
-SCOPE_LIB = 'user-library-read'
-SCOPE_HISTORY = 'user-read-recently-played'
-SCOPE_TOP = 'user-top-read'
 
 TOKEN = 'token'
-TOKEN_LIB = 'token-lib'
-TOKEN_HISTORY = 'token-history'
-TOKEN_TOP = 'token-top'
 
-# TODO
-# Explore search API: https://api.spotify.com/v1/search?type=track&q=artist:ArtistName
+# TODO: Explore search API: https://api.spotify.com/v1/search?type=track&q=artist:ArtistName
 
 
 def collect_tokens(user):
