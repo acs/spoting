@@ -1,0 +1,4 @@
+token*
+app-credentials.json
+*.pyc
+.cache*
