@@ -36,17 +36,18 @@ SPOTIFY_API_ME = SPOTIFY_API + '/me'
 SPOTIFY_USER = 'acsspotify'
 SCOPES = 'user-library-read,user-read-recently-played,user-top-read'
 
-TOKEN = 'token'
+TOKEN_FILE = '.token'
 
 # TODO: Explore search API: https://api.spotify.com/v1/search?type=track&q=artist:ArtistName
 
 
-def collect_tokens(user):
+def collect_tokens(user, scopes):
     """
-    Collect tokens for SCOPE and SCOPE_HISTORY Spotify scopes
+    Get a valid token for a user an a comma separated string list of scopes
 
-    :param user: Spotify user for getting the tokens
-    :return: the token and token_history for this user
+    :param user: Spotify user for getting the token
+    :param scopes: comma separated string list of scopes
+    :return: the token and token for this user
     """
 
     # First step is to configure the env for asking for tokens
@@ -60,79 +61,127 @@ def collect_tokens(user):
 
     try:
         # If tokens are older than 1h (3600s) we must refresh them
-        if int(time.time() - int(os.path.getmtime(TOKEN))) > 3600:
+        if int(time.time() - int(os.path.getmtime(TOKEN_FILE))) > 3600:
             refresh_token = True
     except Exception as ex:
         refresh_token = True
 
     if refresh_token:
         print("Refreshing the token ... be patient")
-        token = util.prompt_for_user_token(SPOTIFY_USER, SCOPES)
-        with open(TOKEN, "w") as ftoken:
+        token = util.prompt_for_user_token(user, scopes)
+        with open(TOKEN_FILE, "w") as ftoken:
             ftoken.write(token)
     else:
-        with open(TOKEN, "r") as ftoken:
+        with open(TOKEN_FILE, "r") as ftoken:
             token = ftoken.read()
 
     return token
+
+
+def query_api(token, url):
+    """
+    Send a query to the Spotiy API
+
+    :param token: Auth token
+    :param url: URL for the endpoint we want to access
+    :return: The result in json format
+    """
+
+    headers = {"Authorization": "Bearer %s" % token}
+    res = requests.get(url, headers=headers)
+    res.raise_for_status()
+
+    return res.json()
 
 
 def find_playlists(token):
     """
     Get the playlists for the user
 
-    :param token: user token for getting her playlists
-    :return:
+    :param token: Auth token
+    :return: A playlists list
     """
-    headers = {"Authorization": "Bearer %s" % token}
+    url = SPOTIFY_API_ME + "/playlists"
 
-    res = requests.get(SPOTIFY_API_ME + "/playlists", headers=headers)
-    res.raise_for_status()
+    playlists = query_api(token, url)
 
-    playlists = res.json()
-
-    print(playlists['items'][0])
+    return playlists['items']
 
 
-def find_recently_played(token_history):
-    """ Find the last 50 find_recently_played tracks by the user """
+def show_tracks(tracks, title="TRACKS LIST"):
+    """
+    Print a list of track in a common format
+
+    :param tracks: List of tracks to be printed
+    :return: None
+    """
+    # print("\n* %s: name artist" % title)
+    print("\n{0:40} {1}\n".format("* " + title + " Track name", "Artist"))
+    for track in tracks:
+        if 'track' in track:
+            track = track['track']
+        print("{0:40} {1}".format(track['name'][0:40], track['artists'][0]['name']))
+
+
+def find_recently_played_tracks(token):
+    """
+    Find the last 50 find_recently_played_tracks tracks by the user
+
+    :param token: Auth token
+    :return: A tracks list
+    """
 
     # Right now the API from Spotify only allows to get the 50 tracks last played
     limit = "50"
-
-    headers = {"Authorization": "Bearer %s" % token_history}
-
     history_url = SPOTIFY_API_ME + "/player/recently-played?limit=%s" % limit
+    recent_tracks = query_api(token, history_url)
 
-    res = requests.get(history_url, headers=headers)
-
-    res.raise_for_status()
-
-    recent_tracks = res.json()
-
-    for track in recent_tracks['items']:
-        print(track['track'], ":", ['name'], track['track']['artists'][0]['name'])
+    return recent_tracks['items']
 
 
-def find_tops(token_top, kind='tracks'):
+def find_tops_tracks(token, kind='tracks'):
     """
     Find the top tracks or artists
-    :param token_top: Token for accessing the Top API
-    :return:
+    :param token: Auth token
+    :return: A tracks list
     """
-    headers = {"Authorization": "Bearer %s" % token_top}
+
+    # Right now the API from Spotify only allows to get the 50 tracks as top
     limit = "50"
-    history_url = SPOTIFY_API_ME + "/top/%s?limit=%s" % (kind, limit)
+    top_url = SPOTIFY_API_ME + "/top/%s?limit=%s" % (kind, limit)
+    top_tracks = query_api(token, top_url)
 
-    res = requests.get(history_url, headers=headers)
-    res.raise_for_status()
-    top_tracks = res.json()
+    return top_tracks['items']
 
-    for track in top_tracks['items']:
-        print(track['name'], ":", track['artists'][0]['name'])
+
+def search_artist_tracks(token, artist):
+    """
+    Search tracks for an artist
+
+    :param token: Auth token
+    :param artist: Name of the artist to be searched
+    :return: A tracks list
+    """
+
+    tracks = []
+    offset = 0
+
+    limit = 50
+    max_items = limit * 5  # Max number of result items to retrieve
+    while True:
+        time.sleep(0.1)
+        search_url = SPOTIFY_API + "/search?type=track&q=artist:%s&limit=%i&offset=%i" % (artist, limit, offset)
+        items = query_api(token, search_url)
+        if not items['tracks']['items'] or offset >= max_items:
+            break
+        tracks += items['tracks']['items']
+        offset += limit
+
+    return tracks
 
 
 if __name__ == '__main__':
-    token = collect_tokens(SPOTIFY_USER)
-    find_tops(token)
-    find_recently_played(token)
+    token = collect_tokens(SPOTIFY_USER, SCOPES)
+    show_tracks(find_tops_tracks(token), title="Top")
+    show_tracks(find_recently_played_tracks(token), title="Recently Played")
+    show_tracks(search_artist_tracks(token, "Mecano"))
