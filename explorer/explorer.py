@@ -45,7 +45,7 @@ def collect_tokens(user, scopes):
 
     :param user: Spotify user for getting the token
     :param scopes: comma separated string list of scopes
-    :return: the token and token for this user
+    :return: a token for this user
     """
 
     # First step is to configure the env for asking for tokens
