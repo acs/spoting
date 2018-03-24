@@ -166,6 +166,7 @@ def search_artist_tracks(token, artist):
 
     limit = 50
     max_items = limit * 5  # Max number of result items to retrieve
+    # Maximum offset: 100.000.
     while True:
         time.sleep(0.1)
         search_url = SPOTIFY_API + "/search?type=track&q=artist:%s&limit=%i&offset=%i" % (artist, limit, offset)
