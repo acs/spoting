@@ -38,8 +38,6 @@ SCOPES = 'user-library-read,user-read-recently-played,user-top-read'
 
 TOKEN_FILE = '.token'
 
-# TODO: Explore search API: https://api.spotify.com/v1/search?type=track&q=artist:ArtistName
-
 
 def collect_tokens(user, scopes):
     """
