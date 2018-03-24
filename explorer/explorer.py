@@ -34,7 +34,7 @@ import spotipy.util as util
 SPOTIFY_API = 'https://api.spotify.com/v1'
 SPOTIFY_API_ME = SPOTIFY_API + '/me'
 SPOTIFY_USER = 'acsspotify'
-SCOPES = 'user-library-read,user-read-recently-played,user-top-read'
+SCOPES = 'user-library-read,user-read-recently-played,user-top-read,user-follow-read'
 
 TOKEN_FILE = '.token'
 
@@ -160,7 +160,7 @@ def find_user_tops(token, kind='tracks'):
     """
     Find the top tracks or artists
     :param token: Auth token
-    :return: A tracks list
+    :return: A tracks or artists list
     """
 
     kinds = ['tracks', 'artists']
@@ -176,6 +176,34 @@ def find_user_tops(token, kind='tracks'):
     top = query_api(token, top_url)
 
     return top['items']
+
+
+def find_user_followed(token):
+    """
+    Find the artists a user is following
+    :param token: Auth token
+    :return: An artists list
+    """
+
+    artists = []
+    after = ''
+
+    limit = 50
+
+    while True:
+        time.sleep(0.1)
+
+        followed_url = SPOTIFY_API_ME + "/following?type=artist&limit=%i" % (limit)
+        if after:
+            followed_url += "&after=" + after
+        items = query_api(token, followed_url)
+
+        artists += items['artists']['items']
+        after = items['artists']['cursors']['after']
+        if not after:
+            break
+
+    return artists
 
 
 def search_artist_tracks(token, artist):
@@ -207,7 +235,8 @@ def search_artist_tracks(token, artist):
 
 if __name__ == '__main__':
     token = collect_tokens(SPOTIFY_USER, SCOPES)
-    show_artists(find_user_tops(token, kind='artists'), title="Top")
+    # show_artists(find_user_tops(token, kind='artists'), title="Top")
+    show_artists(find_user_followed(token), title="Followed")
     # show_tracks(find_user_tops(token), title="Top")
     # show_tracks(find_recently_played_tracks(token), title="Recently Played")
     # show_tracks(search_artist_tracks(token, "Mecano"))
