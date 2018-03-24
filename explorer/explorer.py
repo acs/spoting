@@ -85,6 +85,12 @@ def query_api(token, url):
     :return: The result in json format
     """
 
+    # TODO: Control rate limit
+    # If status code is 429, Retry-After header field has the seconds to wait
+    # Somewhere around 10-20 requests per second would put you in the correct ballpark
+    # TODO: Use cache field to avoid querying the API
+    # https://developer.spotify.com/web-api/user-guide/#conditional-requests
+
     headers = {"Authorization": "Bearer %s" % token}
     res = requests.get(url, headers=headers)
     res.raise_for_status()
@@ -104,6 +110,19 @@ def find_playlists(token):
     playlists = query_api(token, url)
 
     return playlists['items']
+
+
+def show_artists(artists, title="TRACKS LIST"):
+    """
+    Print a list of artists in a common format
+
+    :param artists: List of artists to be printed
+    :return: None
+    """
+    # print("\n* %s: name artist" % title)
+    print("\n{0:40} {1}\n".format("* " + title + " Track name", "Artist"))
+    for artist in artists:
+        print("{0:40}".format(artist['name'][0:40]))
 
 
 def show_tracks(tracks, title="TRACKS LIST"):
@@ -137,19 +156,26 @@ def find_recently_played_tracks(token):
     return recent_tracks['items']
 
 
-def find_tops_tracks(token, kind='tracks'):
+def find_user_tops(token, kind='tracks'):
     """
     Find the top tracks or artists
     :param token: Auth token
     :return: A tracks list
     """
 
+    kinds = ['tracks', 'artists']
+
+    if kind not in kinds:
+        raise RuntimeError('Tops are only available for %s not for %s' % (kinds, kind))
+
     # Right now the API from Spotify only allows to get the 50 tracks as top
+    # Using the artist we can use it as an starting point to find other
+    # contents appetizing
     limit = "50"
     top_url = SPOTIFY_API_ME + "/top/%s?limit=%s" % (kind, limit)
-    top_tracks = query_api(token, top_url)
+    top = query_api(token, top_url)
 
-    return top_tracks['items']
+    return top['items']
 
 
 def search_artist_tracks(token, artist):
@@ -181,6 +207,7 @@ def search_artist_tracks(token, artist):
 
 if __name__ == '__main__':
     token = collect_tokens(SPOTIFY_USER, SCOPES)
-    show_tracks(find_tops_tracks(token), title="Top")
-    show_tracks(find_recently_played_tracks(token), title="Recently Played")
-    show_tracks(search_artist_tracks(token, "Mecano"))
+    show_artists(find_user_tops(token, kind='artists'), title="Top")
+    # show_tracks(find_user_tops(token), title="Top")
+    # show_tracks(find_recently_played_tracks(token), title="Recently Played")
+    # show_tracks(search_artist_tracks(token, "Mecano"))
