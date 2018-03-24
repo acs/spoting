@@ -233,10 +233,37 @@ def search_artist_tracks(token, artist):
     return tracks
 
 
+def find_user_saved_tracks(token):
+    """
+    Get a list of the songs saved in the current Spotify user’s “Your Music” library.
+
+    :param token: Auth token
+    :return: A tracks list
+    """
+
+    tracks = []
+    offset = 0
+
+    limit = 50
+    max_items = limit * 10  # Max number of result items to retrieve
+    while True:
+        time.sleep(0.1)
+        saved_url = SPOTIFY_API_ME + "/tracks?limit=%i&offset=%i" % (limit, offset)
+        items = query_api(token, saved_url)
+        if not items['items'] or offset >= max_items:
+            break
+        tracks += items['items']
+        offset += limit
+
+    return tracks
+
+
+
 if __name__ == '__main__':
     token = collect_tokens(SPOTIFY_USER, SCOPES)
     # show_artists(find_user_tops(token, kind='artists'), title="Top")
-    show_artists(find_user_followed(token), title="Followed")
+    # show_artists(find_user_followed(token), title="Followed")
     # show_tracks(find_user_tops(token), title="Top")
     # show_tracks(find_recently_played_tracks(token), title="Recently Played")
     # show_tracks(search_artist_tracks(token, "Mecano"))
+    show_tracks(find_user_saved_tracks(token))
