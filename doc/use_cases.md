@@ -8,7 +8,9 @@ I will just add new use cases as they come to my mind. No order yet. No action p
 
 ## Done
 
-### Finding new artists to follow #1
+### Finding new artists to follow
+
+https://github.com/acs/spoting/issues/1 #1
 
 Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/explorer/recommender.py) 
 
