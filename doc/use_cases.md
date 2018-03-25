@@ -10,7 +10,7 @@ I will just add new use cases as they come to my mind. No order yet. No action p
 
 ### Finding new artists to follow
 
-https://github.com/acs/spoting/issues/1 #1
+https://github.com/acs/spoting/issues/1
 
 Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/explorer/recommender.py) 
 
@@ -33,7 +33,9 @@ The natural extension for this use case is to filter the new artists with differ
 
 ## Pending
 
-### Understading music charms #2
+### Understading music charms
+
+https://github.com/acs/spoting/issues/2
 
 Why I like some kind of music and not others? What are the genres of music that I like more?
 
