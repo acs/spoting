@@ -75,7 +75,7 @@ def collect_tokens(user, scopes):
     return token
 
 
-def query_api(token, url):
+def query_api(token, url, method="GET", data=None):
     """
     Send a query to the Spotiy API
 
@@ -91,7 +91,10 @@ def query_api(token, url):
     # https://developer.spotify.com/web-api/user-guide/#conditional-requests
 
     headers = {"Authorization": "Bearer %s" % token}
-    res = requests.get(url, headers=headers)
+    if method == "GET":
+        res = requests.get(url, headers=headers)
+    elif method == "POST":
+        res = requests.post(url, headers=headers, data=data)
     res.raise_for_status()
 
     return res.json()
