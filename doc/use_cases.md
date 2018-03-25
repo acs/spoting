@@ -17,16 +17,25 @@ Is it possible from the to understand whan hve in common by most beloved songs?
 
 ### Finding new artists to follow
 
-Spotify already recommends you new artists using playlists. 
+Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/explorer/recommender.py) 
+
+Spotify clients already recommends you new artists using playlists.
 But probably having in mind my own criteria I could do a better job for me.
 
 The analysis of the artists that I already follow can be used as the seed
 for getting recommendations from Spotify, and the use this recommendations as
-seed for new recommendations until for example, 100 artists are found.
+seed for new recommendations until for example, 1000 artists are found.
 
-Then decide how to order these 100 artists to explore her music.
+In the current implementation only the first circle is covered: related artists to my followed and top artists.
 
-https://github.com/acs/spoting/blob/master/explorer/recommender.py
+In the current implementation, one top track is fetch from each of the related artists
+and it is added to a playlist called "Recommender".
+
+Another playlist "RecommenderRare" is created using the artists which are followed by less than 5000 listeners.
+
+The natural extension for this use case is to filter the new artists with different criteria: genres, popularity,  
+
+
 
 ### Finding new genders of music I like and the relation between them
 
