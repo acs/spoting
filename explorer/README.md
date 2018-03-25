@@ -2,7 +2,11 @@
 
 A simple explorer script to play with the Spotify API.
 
-### Authentication
+# Recommender
+
+A simple recommender script to find new artists interesting for a user.
+
+# Authentication
  
 You need to have a registered application in Spotify and to add its data to the file **app-credentials.json**.
 Use app-credentials-sample.json as a template for it.
