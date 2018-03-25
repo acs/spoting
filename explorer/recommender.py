@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# An experimental Spotify Proposer
+# An experimental Spotify Recommeder
 #
 # Copyright (C) Bitergia
 #
@@ -22,6 +22,7 @@
 # Authors:
 #   Alvaro del Castillo San Felix <acs@bitergia.com>
 #
+
 import json
 import operator
 import os.path
