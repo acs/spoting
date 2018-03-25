@@ -183,7 +183,19 @@ def show_recommendations(new_artists):
     print(json.dumps(artists_followers_sorted, indent=True))
 
 
-def add_artists_top_track(token, playlist, artists):
+def add_artists_top_track(token, playlist_id, artists):
+    selected_tracks = []
+    for artist in artists[0:5]:
+        url_top = explorer.SPOTIFY_API + "/artists/%s/top-tracks?country=%s" % (artist['id'], explorer.SPOTIFY_MARKET)
+        tracks = explorer.query_api(token, url_top)
+        selected_tracks.append(tracks['tracks'][0])
+
+    data = {}
+    data["uris"] = ",".join([track["uri"] for track in selected_tracks])
+
+    url_add_playlist = explorer.SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
+    res = explorer.query_api(token, url_add_playlist, method='POST', data=json.dumps(data))
+
     pass
 
 def find_user_playlists(token):
@@ -240,7 +252,7 @@ def create_playlist(token, artists):
         recommender_list_id = playlist['id']
 
     # Time to find the tracks and add them to the playlist
-    add_artists_top_track(token, playlist, artists)
+    add_artists_top_track(token, recommender_list_id, artists)
 
 
 if __name__ == '__main__':
