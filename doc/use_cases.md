@@ -8,7 +8,7 @@ I will just add new use cases as they come to my mind. No order yet. No action p
 
 ## Done
 
-### Finding new artists to follow
+### Finding new artists to follow #1
 
 Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/explorer/recommender.py) 
 
@@ -31,7 +31,7 @@ The natural extension for this use case is to filter the new artists with differ
 
 ## Pending
 
-### Understading music charms
+### Understading music charms #2
 
 Why I like some kind of music and not others? What are the genres of music that I like more?
 
