@@ -34,6 +34,7 @@ import spotipy.util as util
 SPOTIFY_API = 'https://api.spotify.com/v1'
 SPOTIFY_API_ME = SPOTIFY_API + '/me'
 SPOTIFY_USER = 'acsspotify'
+SPOTIFY_MARKET = 'ES'
 SCOPES = 'user-library-read,user-read-recently-played,user-top-read,user-follow-read'
 
 TOKEN_FILE = '.token'
@@ -95,7 +96,10 @@ def query_api(token, url, method="GET", data=None):
         res = requests.get(url, headers=headers)
     elif method == "POST":
         res = requests.post(url, headers=headers, data=data)
-    res.raise_for_status()
+    try:
+        res.raise_for_status()
+    except Exception:
+        raise
 
     return res.json()
 
