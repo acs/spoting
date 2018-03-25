@@ -26,6 +26,8 @@ seed for new recommendations until for example, 100 artists are found.
 
 Then decide how to order these 100 artists to explore her music.
 
+https://github.com/acs/spoting/blob/master/explorer/recommender.py
+
 ### Finding new genders of music I like and the relation between them
 
 ### Tracking new releases of music that I must hear
