@@ -6,14 +6,7 @@ All in pre-alpha status just for my personal usage now. But willing to improve i
 
 I will just add new use cases as they come to my mind. No order yet. No action plan. Just a place in which to write things.
 
-### Understading music charms
-
-Why I like some kind of music and not others? What are the genres of music that I like more?
-
-Not just talking about rock, pop, metal, jazz but try to find more specific genres that I like.
-
-Also, Spotify does [analysis in tracks](https://developer.spotify.com/web-api/get-audio-analysis/). 
-Is it possible from the to understand whan hve in common by most beloved songs? 
+## Done
 
 ### Finding new artists to follow
 
@@ -35,6 +28,17 @@ Another playlist "RecommenderRare" is created using the artists which are follow
 
 The natural extension for this use case is to filter the new artists with different criteria: genres, popularity,  
 
+
+## Pending
+
+### Understading music charms
+
+Why I like some kind of music and not others? What are the genres of music that I like more?
+
+Not just talking about rock, pop, metal, jazz but try to find more specific genres that I like.
+
+Also, Spotify does [analysis in tracks](https://developer.spotify.com/web-api/get-audio-analysis/). 
+Is it possible from the to understand whan hve in common by most beloved songs? 
 
 
 ### Finding new genders of music I like and the relation between them
