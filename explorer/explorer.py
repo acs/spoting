@@ -99,6 +99,7 @@ def query_api(token, url, method="GET", data=None):
     try:
         res.raise_for_status()
     except Exception:
+        print("Error in query to Web API", res.reason, res.text)
         raise
 
     return res.json()
