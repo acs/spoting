@@ -55,6 +55,7 @@ def clean_artists(artists, remove=[]):
             continue
         else:
             cleaned_artists.append(artist)
+            already_added_ids.append(artist['id'])
 
     return cleaned_artists
 
@@ -232,7 +233,7 @@ def filter_artists(artists, artists_filter):
     return filtered_artists
 
 
-def add_artists_top_track(token, playlist_id, artists):
+def add_artists_top_track(token, playlist, artists):
     """
     Add the top track from artists to the playlist with id playlist_id
 
@@ -242,12 +243,18 @@ def add_artists_top_track(token, playlist_id, artists):
     :return: None
     """
 
-    max_artists = 50  # TODO: Remove this safe limit
+    playlist_id = playlist['id']
+
+    max_artists = 500  # Safe limit
+    max_tracks_pack = 100  # Max number of tracks that can be added per call to a playlist
 
     # To avoid adding duplicate tracks get the current ones
+    print("Finding the tracks that are already in the playlist", playlist['name'])
     already_tracks_ids = fetch_tracks_ids_from_playlist(playlist_id)
 
     # Get first the tracks to be added to the playlist
+    print("Finding the tracks to add to the playlist %s from %i artists (one call per each)"
+          % (playlist['name'], len(artists)))
     selected_tracks = []
     for artist in artists[0:max_artists]:
         url_top = explorer.SPOTIFY_API + "/artists/%s/top-tracks?country=%s" % (artist['id'], explorer.SPOTIFY_MARKET)
@@ -259,14 +266,21 @@ def add_artists_top_track(token, playlist_id, artists):
         except IndexError:
             print("%s does not have top tracks" % artist['name'])
 
-    # Add the tracks found to the playlist
-    data = {}
-    data["uris"] = [track["uri"] for track in selected_tracks]
-    url_playlist = explorer.SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
-    if data["uris"]:
-        res = explorer.query_api(token, url_playlist, method='POST', data=json.dumps(data))
-    else:
-        print("No new tracks to add to %s playlist" % RECOMMENDER_LIST)
+    # Add the tracks found to the playlist in 100 packs
+    offset = 0
+    print("Adding the tracks to the playlist", playlist['name'])
+
+    while offset < len(selected_tracks):
+        data = {}
+        data["uris"] = [track["uri"] for track in selected_tracks[offset:offset + max_tracks_pack]]
+        offset += max_tracks_pack
+        url_playlist = explorer.SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
+        if data["uris"]:
+            res = explorer.query_api(token, url_playlist, method='POST', data=json.dumps(data))
+        else:
+            print("No more tracks to add to %s playlist" % playlist['name'])
+
+    print("Added %i tracks to the playlist %s" % (len(selected_tracks), playlist['name']))
 
 
 def find_user_playlists(token):
@@ -300,7 +314,7 @@ def create_playlist(token, name, description=""):
 
     :param token: User auth token
     :param name: name of the playlist to create
-    :return: id of then playlist created
+    :return: the playlist created
     """
 
     playlists = find_user_playlists(token)
@@ -325,7 +339,7 @@ def create_playlist(token, name, description=""):
         playlist = explorer.query_api(token, create_url, method="POST", data=json.dumps(playlist_data))
         recommender_list_id = playlist['id']
 
-    return playlist['id']
+    return playlist
 
 
 if __name__ == '__main__':
@@ -337,14 +351,14 @@ if __name__ == '__main__':
 
     # Create a new playlist with one song for each of the new artists
     description = "Spoting playlist with one song for the recommended new artists: https://github.com/acs/spoting."
-    playlist_id = create_playlist(token, RECOMMENDER_LIST, description)
+    playlist = create_playlist(token, RECOMMENDER_LIST, description)
     # Time to find the tracks and add them to the playlist
-    add_artists_top_track(token, playlist_id, new_artists)
+    add_artists_top_track(token, playlist, new_artists)
 
     # Create a new playlist with one song for each of the new rare artists
     description = "Spoting playlist with one song for the recommended new RARE artists: https://github.com/acs/spoting."
-    playlist_id = create_playlist(token, RECOMMENDER_RARE_LIST, description)
+    playlist = create_playlist(token, RECOMMENDER_RARE_LIST, description)
     # Time to find the tracks and add them to the playlist
     artists_rare = filter_artists(new_artists, 'rare')
-    add_artists_top_track(token, playlist_id, artists_rare)
+    add_artists_top_track(token, playlist, artists_rare)
 
