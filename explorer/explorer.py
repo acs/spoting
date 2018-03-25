@@ -38,7 +38,6 @@ SCOPES = 'user-library-read,user-read-recently-played,user-top-read,user-follow-
 
 TOKEN_FILE = '.token'
 
-
 def collect_tokens(user, scopes):
     """
     Get a valid token for a user an a comma separated string list of scopes
@@ -178,7 +177,7 @@ def find_user_tops(token, kind='tracks'):
     return top['items']
 
 
-def find_user_followed(token):
+def find_user_followed_artists(token):
     """
     Find the artists a user is following
     :param token: Auth token
@@ -193,7 +192,7 @@ def find_user_followed(token):
     while True:
         time.sleep(0.1)
 
-        followed_url = SPOTIFY_API_ME + "/following?type=artist&limit=%i" % (limit)
+        followed_url = SPOTIFY_API_ME + "/following?type=artist&limit=%i" % limit
         if after:
             followed_url += "&after=" + after
         items = query_api(token, followed_url)
@@ -262,7 +261,7 @@ def find_user_saved_tracks(token):
 if __name__ == '__main__':
     token = collect_tokens(SPOTIFY_USER, SCOPES)
     # show_artists(find_user_tops(token, kind='artists'), title="Top")
-    # show_artists(find_user_followed(token), title="Followed")
+    # show_artists(find_user_followed_artists(token), title="Followed")
     # show_tracks(find_user_tops(token), title="Top")
     # show_tracks(find_recently_played_tracks(token), title="Recently Played")
     # show_tracks(search_artist_tracks(token, "Mecano"))
