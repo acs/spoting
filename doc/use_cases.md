@@ -88,7 +88,7 @@ the tracks to be added to the playlist. This track selection is the core issue i
 Probably, with the experience from the above use cases an Editor for creating playlist could be defined.
 
 This editor must aid in using genrer, categories, artists, albums, tracks features, 
-markets, new releases ... to create the dreamed playlist for the user. 
+markets, new releases ... to create the dreamed playlist for the user.
   
 ### Lyrics analyzer
 
@@ -98,6 +98,12 @@ In this use case we should find howto find the lyrics for a playlist and then th
 
 Similar project: https://github.com/ribeirojpn/follou  
 
+### Your Best Playlist10 generator
+
+The idea is to automatically using your preferences to generate a playlist with 10 items that are the best
+according to an assessment based on a tracks+artists+albums model. 
+
+An initial approach could be to just get the top track from the top authors included in your preferences.
 
 ### Read Spotify Insights 
 
