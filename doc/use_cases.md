@@ -92,6 +92,8 @@ markets, new releases ... to create the dreamed playlist for the user.
   
 ### Lyrics analyzer
 
+https://github.com/acs/spoting/issues/5
+
 One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
 
 In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
