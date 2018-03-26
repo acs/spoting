@@ -10,7 +10,7 @@ I will just add new use cases as they come to my mind. No order yet. No action p
 
 ### General Explorer
 
-In this use case the idea is to explorer the Sportify Web API and start implementing the basic
+In this use case the idea is to explorer the Spotify Web API and start implementing the basic
 methods that will be used in other use cases. In the future much of this work will bre
 replaced by the [spotipy](https://github.com/plamere/spotipy) library, but with the goal of learning in deep the Web API,
 right now I only use spotipy for the OAuth-2 auth.
