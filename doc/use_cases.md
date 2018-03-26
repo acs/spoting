@@ -47,7 +47,7 @@ Is it possible from the to understand whan hve in common by most beloved songs?
 
 ### Finding new genders of music I like and the relation between them
 
-### Tracking new releases of music that I must hear
+### Tracking new releases of music that I must listen to
 
 ### Understanding the relationships between artists
 
