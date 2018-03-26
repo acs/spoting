@@ -78,6 +78,8 @@ to get the evolution of followers for an artists.
 
 ### Playlist Creator
 
+https://github.com/acs/spoting/issues/4
+
 The creation of playlist is probably the most valuable use case for the user of Spotify.
 
 But creating a playlist and adding tracks to it is easy. The hard thing is howto select
