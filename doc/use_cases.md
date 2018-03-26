@@ -49,6 +49,8 @@ Is it possible from the to understand whan hve in common by most beloved songs?
 
 ### Tracking new releases of music that I must listen to
 
+https://github.com/acs/spoting/issues/3
+
 ### Understanding the relationships between artists
 
 ### Understanding the evolution of the artists
