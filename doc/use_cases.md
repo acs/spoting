@@ -75,6 +75,18 @@ Coudl we get trends from the API? I have not seen for example if it is possible
 to get the evolution of followers for an artists.
 
 ### Analyze specific moments like the 80's in Spain
+
+### Playlist Creator
+
+The creation of playlist is probably the most valuable use case for the user of Spotify.
+
+But creating a playlist and adding tracks to it is easy. The hard thing is howto select
+the tracks to be added to the playlist. This track selection is the core issue in all the other use cases.
+
+Probably, with the experience from the above use cases an Editor for creating playlist could be defined.
+
+This editor must aid in using genrer, categories, artists, albums, tracks features, 
+markets, new releases ... to create the dreamed playlist for the user. 
   
 
 ### Read Spotify Insights 
