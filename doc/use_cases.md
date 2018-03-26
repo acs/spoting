@@ -90,6 +90,14 @@ Probably, with the experience from the above use cases an Editor for creating pl
 This editor must aid in using genrer, categories, artists, albums, tracks features, 
 markets, new releases ... to create the dreamed playlist for the user. 
   
+### Lyrics analyzer
+
+One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
+
+In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
+
+Similar project: https://github.com/ribeirojpn/follou  
+
 
 ### Read Spotify Insights 
 
