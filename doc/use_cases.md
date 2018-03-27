@@ -106,6 +106,8 @@ One key aspect of a track are its lyrics. But Spotify does not offer any data ab
 
 In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
 
+And using tag clouds for the lyrics will be cool (alpgarcia idea!)
+
 Similar project: https://github.com/ribeirojpn/follou
 
 ### Tracking concerts for your artists
