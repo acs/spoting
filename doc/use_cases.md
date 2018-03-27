@@ -98,9 +98,11 @@ the tracks to be added to the playlist. This track selection is the core issue i
 Probably, with the experience from the above use cases an Editor for creating playlist could be defined.
 
 This editor must aid in using genrer, categories, artists, albums, tracks features, 
-markets, new releases ... to create the dreamed playlist for the user. 
-  
+markets, new releases ... to create the dreamed playlist for the user.
+
 ### Lyrics Viewer
+
+https://github.com/acs/spoting/issues/5
 
 One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
 
@@ -114,12 +116,19 @@ Similar project: https://github.com/ribeirojpn/follou
 
 Spotify is using [songkick](https://www.songkick.com/developer) to track the concerts of the artists.
 
-The idea of this use case is to show the concerts for your top artists.  
+The idea of this use case is to show the concerts for your top artists.
 
 ### Building automatically a Playlist from Music Festivals
 
 If the artists from a Music Festival can be collected in a reasonable way, probably using Songkick, 
 this can be a cool service
+
+### Your Best Playlist10 generator
+
+The idea is to automatically using your preferences to generate a playlist with 10 items that are the best
+according to an assessment based on a tracks+artists+albums model. 
+
+An initial approach could be to just get the top track from the top authors included in your preferences.
 
 ### Read Spotify Insights 
 
