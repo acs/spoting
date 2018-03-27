@@ -100,7 +100,7 @@ Probably, with the experience from the above use cases an Editor for creating pl
 This editor must aid in using genrer, categories, artists, albums, tracks features, 
 markets, new releases ... to create the dreamed playlist for the user. 
   
-### Lyrics analyzer
+### Lyrics Viewer
 
 One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
 
@@ -114,6 +114,10 @@ Spotify is using [songkick](https://www.songkick.com/developer) to track the con
 
 The idea of this use case is to show the concerts for your top artists.  
 
+### Building automatically a Playlist from Music Festivals
+
+If the artists from a Music Festival can be collected in a reasonable way, probably using Songkick, 
+this can be a cool service
 
 ### Read Spotify Insights 
 
