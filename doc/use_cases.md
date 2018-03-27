@@ -106,7 +106,13 @@ One key aspect of a track are its lyrics. But Spotify does not offer any data ab
 
 In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
 
-Similar project: https://github.com/ribeirojpn/follou  
+Similar project: https://github.com/ribeirojpn/follou
+
+### Tracking concerts for your artists
+
+Spotify is using [songkick](https://www.songkick.com/developer) to track the concerts of the artists.
+
+The idea of this use case is to show the concerts for your top artists.  
 
 
 ### Read Spotify Insights 
