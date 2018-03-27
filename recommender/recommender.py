@@ -32,7 +32,7 @@ from spoting.spoting import (SPOTIFY_API, SPOTIFY_API_ME,
                              collect_tokens, query_api,
                              find_user_followed_artists, find_user_tops)
 
-DEBUG = True
+DEBUG = False
 
 SPOTIFY_USER = 'acsspotify'
 SPOTIFY_MARKET = "es"
