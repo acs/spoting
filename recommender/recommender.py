@@ -27,9 +27,15 @@ import json
 import operator
 import os.path
 
-import explorer
+
+from spoting.spoting import (SPOTIFY_API, SPOTIFY_API_ME,
+                             collect_tokens, query_api,
+                             find_user_followed_artists, find_user_tops)
+
+DEBUG = True
 
 SPOTIFY_USER = 'acsspotify'
+SPOTIFY_MARKET = "es"
 SCOPES = 'user-library-read,user-read-recently-played,user-top-read,user-follow-read,playlist-modify-public'
 RECOMMENDER_LIST = "Recommender"
 ARTIST_RARE_MAX_FOLLOWERS = 5000
@@ -80,8 +86,8 @@ def find_artists_recommendations(token, seed_artists_ids=[]):
             break
         # The seed must be a list with 5 artists ids
         seed = "seed_artists=" + ",".join(seed)
-        recommend_url = explorer.SPOTIFY_API + "/recommendations?limit=%i&%s" % (limit, seed)
-        tracks = explorer.query_api(token, recommend_url)
+        recommend_url = SPOTIFY_API + "/recommendations?limit=%i&%s" % (limit, seed)
+        tracks = query_api(token, recommend_url)
 
         # Now we need to extract the artists from the tracks
         # The artist object included is the simplified one, so no followers info
@@ -104,8 +110,8 @@ def find_related_artists(token, seed_artists_ids=[]):
     artists = []
 
     for artist_id in seed_artists_ids:
-        related_url = explorer.SPOTIFY_API + "/artists/%s/related-artists" % (artist_id)
-        related_artists = explorer.query_api(token, related_url)
+        related_url = SPOTIFY_API + "/artists/%s/related-artists" % (artist_id)
+        related_artists = query_api(token, related_url)
         artists += related_artists['artists']
 
     return artists
@@ -122,8 +128,8 @@ def find_artists(token):
     :return: A list of artists names not known by the user
     """
 
-    followed = explorer.find_user_followed_artists(token)
-    top = explorer.find_user_tops(token, kind='artists')
+    followed = find_user_followed_artists(token)
+    top = find_user_tops(token, kind='artists')
 
     followed_names = set([a['name'] for a in followed])
     followed_ids = set([a['id'] for a in followed])
@@ -187,7 +193,7 @@ def show_recommendations(new_artists):
 
 def fetch_tracks_ids_from_playlist(playlist_id):
 
-    url_playlist = explorer.SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
+    url_playlist = SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
 
     already_tracks_ids = []
 
@@ -197,7 +203,7 @@ def fetch_tracks_ids_from_playlist(playlist_id):
     limit = 100
     while True:
         url_tracks = url_playlist + "?limit=%i&offset=%i" % (limit, offset)
-        tracks = explorer.query_api(token, url_tracks)
+        tracks = query_api(token, url_tracks)
         if not tracks['items']:
             break
         already_tracks_ids += [track['track']['id'] for track in tracks['items']]
@@ -248,6 +254,9 @@ def add_artists_top_track(token, playlist, artists):
     max_artists = 500  # Safe limit
     max_tracks_pack = 100  # Max number of tracks that can be added per call to a playlist
 
+    if DEBUG:
+        max_artists = 5
+
     # To avoid adding duplicate tracks get the current ones
     print("Finding the tracks that are already in the playlist", playlist['name'])
     already_tracks_ids = fetch_tracks_ids_from_playlist(playlist_id)
@@ -257,8 +266,8 @@ def add_artists_top_track(token, playlist, artists):
           % (playlist['name'], len(artists)))
     selected_tracks = []
     for artist in artists[0:max_artists]:
-        url_top = explorer.SPOTIFY_API + "/artists/%s/top-tracks?country=%s" % (artist['id'], explorer.SPOTIFY_MARKET)
-        tracks = explorer.query_api(token, url_top)
+        url_top = SPOTIFY_API + "/artists/%s/top-tracks?country=%s" % (artist['id'], SPOTIFY_MARKET)
+        tracks = query_api(token, url_top)
         # Get the first track from the top list
         try:
             if tracks['tracks'][0]['id'] not in already_tracks_ids:
@@ -274,9 +283,9 @@ def add_artists_top_track(token, playlist, artists):
         data = {}
         data["uris"] = [track["uri"] for track in selected_tracks[offset:offset + max_tracks_pack]]
         offset += max_tracks_pack
-        url_playlist = explorer.SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
+        url_playlist = SPOTIFY_API + "/users/%s/playlists/%s/tracks" % (SPOTIFY_USER, playlist_id)
         if data["uris"]:
-            res = explorer.query_api(token, url_playlist, method='POST', data=json.dumps(data))
+            res = query_api(token, url_playlist, method='POST', data=json.dumps(data))
         else:
             print("No more tracks to add to %s playlist" % playlist['name'])
 
@@ -298,8 +307,8 @@ def find_user_playlists(token):
     playlists = []
 
     while True:
-        playlists_url = explorer.SPOTIFY_API_ME + "/playlists?limit=%i&offset=%i" % (limit, offset)
-        playlists_res = explorer.query_api(token, playlists_url)
+        playlists_url = SPOTIFY_API_ME + "/playlists?limit=%i&offset=%i" % (limit, offset)
+        playlists_res = query_api(token, playlists_url)
         if not playlists_res['items'] or offset >= max_items:
             break
         playlists += playlists_res['items']
@@ -330,20 +339,20 @@ def create_playlist(token, name, description=""):
 
     if not playlist_id:
         # Next create the new mailing list
-        create_url = explorer.SPOTIFY_API + "/users/%s/playlists" % SPOTIFY_USER
+        create_url = SPOTIFY_API + "/users/%s/playlists" % SPOTIFY_USER
         playlist_data = {
             "name": name,
             "description": description
         }
 
-        playlist = explorer.query_api(token, create_url, method="POST", data=json.dumps(playlist_data))
+        playlist = query_api(token, create_url, method="POST", data=json.dumps(playlist_data))
         recommender_list_id = playlist['id']
 
     return playlist
 
 
 if __name__ == '__main__':
-    token = explorer.collect_tokens(SPOTIFY_USER, SCOPES)
+    token = collect_tokens(SPOTIFY_USER, SCOPES)
 
     # From all new artists select some of them using filters like genre, followers ...
     new_artists = find_artists(token)
