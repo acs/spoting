@@ -75,13 +75,17 @@ What are the genres more active now? And the genres that are decaying?
 
 How a new genre appears?
 
+Interesting approach for [country music based on lyrics](http://www.johnwmillr.com/trucks-and-beer/).
+
+And this one for [last 50 years of Pop](http://kaylinwalker.com/50-years-of-pop-music/).
+
 ### Comparing Artists
 
-### Track copyright issues in music
+### Track copyright in music
 
 ### Music Trends
 
-Coudl we get trends from the API? I have not seen for example if it is possible 
+Could we get trends from the API? I have not seen for example if it is possible
 to get the evolution of followers for an artists.
 
 ### Analyze specific moments like the 80's in Spain
@@ -108,7 +112,7 @@ One key aspect of a track are its lyrics. But Spotify does not offer any data ab
 
 In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
 
-And using tag clouds for the lyrics will be cool (alpgarcia idea!)
+And using tag clouds for the lyrics will be cool (alpgarcia idea!) For example, like in [country music based on lyrics](http://www.johnwmillr.com/trucks-and-beer/).
 
 Similar project: https://github.com/ribeirojpn/follou
 

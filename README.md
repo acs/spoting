@@ -22,6 +22,15 @@ An script to generate playlists in Spotify from recommended artists for the user
 
 `PYTHONPATH=. recommender/recommender.py`
 
+## [Lyrics Viewer](xpolyrics)
+
+[Use Case](https://github.com/acs/spoting/blob/master/doc/use_cases.md#lyrics-viewer)
+
+An script to show the lyrics from Spotify playlists.
+
+`PYTHONPATH=. xpolyrics/xpolyrics.py`
+
+
 ## [Spoting library](spoting)
 
 Library with shared methods between the above scripts.

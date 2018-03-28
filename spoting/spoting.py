@@ -36,6 +36,9 @@ SPOTIFY_API_ME = SPOTIFY_API + '/me'
 
 TOKEN_FILE = '.token'
 
+# TODO: Unify pagination with limit+offset when possible
+# TODO: Migrate to spotipy whenever possible
+
 
 def collect_tokens(user, scopes):
     """
@@ -103,6 +106,19 @@ def query_api(token, url, method="GET", data=None):
     return res.json()
 
 
+def find_user_profile(token):
+    """
+    Find the user profile
+
+    :param token: Auth token
+    :return: the user profile related to the auth token
+    """
+
+    profile = query_api(token, SPOTIFY_API_ME)
+
+    return profile
+
+
 def find_user_tops(token, kind='tracks'):
     """
     Find the top tracks or artists
@@ -128,6 +144,7 @@ def find_user_tops(token, kind='tracks'):
 def find_user_followed_artists(token):
     """
     Find the artists a user is following
+
     :param token: Auth token
     :return: An artists list
     """
@@ -152,3 +169,61 @@ def find_user_followed_artists(token):
 
     return artists
 
+def find_user_playlists(token, max=0):
+    """
+    Find playlists from the current user
+
+    :param token: Auth token
+    :param max: max number of playlists to return
+    :return: All the user playlists
+    """
+
+    playlists = []
+
+    limit = 50
+    offset = 0
+    max_playlists = 1000  # safe limit
+    if max:
+        max_playlists = max
+
+    while offset < max_playlists:
+        playlists_url = SPOTIFY_API_ME + "/playlists?limit=%i&offset=%i" % (limit, offset)
+        res = query_api(token, playlists_url)
+        if not res['items']:
+            break
+        playlists += res['items']
+        offset += limit
+
+    return playlists
+
+
+def find_user_playlist_tracks(token, playlist, max=0):
+    """
+    Find all the tracks included in a playlist
+
+    :param token: Auth token
+    :param playlist: playlist spotify object from which to get the tracks
+    :param max: max number of tracks to return
+    :return: All the playlist tracks
+    """
+    tracks = []
+
+    limit = 50
+    offset = 0
+    max_tracks = 1000  # safe limit
+    if max:
+        max_tracks = max
+
+    # First we need the user_id
+
+    user_id = find_user_profile(token)['id']
+
+    while offset < max_tracks:
+        tracks_url = SPOTIFY_API  + "/users/%s/playlists/%s/tracks?limit=%i&offset=%i" % (user_id, playlist['id'], limit, offset)
+        res = query_api(token, tracks_url)
+        if not res['items']:
+            break
+        tracks += res['items']
+        offset += limit
+
+    return tracks
