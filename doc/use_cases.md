@@ -22,7 +22,7 @@ Implemented in: [explorer.py](https://github.com/acs/spoting/blob/master/explore
 
 https://github.com/acs/spoting/issues/1
 
-Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/explorer/recommender.py) 
+Implemented in: [recommender.py](https://github.com/acs/spoting/blob/master/recommender/recommender.py) 
 
 Spotify clients already recommends you new artists using playlists.
 But probably having in mind my own criteria I could do a better job for me.
@@ -39,6 +39,20 @@ and it is added to a playlist called "Recommender".
 Another playlist "RecommenderRare" is created using the artists which are followed by less than 5000 listeners.
 
 The natural extension for this use case is to filter the new artists with different criteria: genres, popularity,  
+
+### Lyrics Viewer
+
+https://github.com/acs/spoting/issues/5
+
+Implemented in: [xpolyrics]()https://github.com/acs/spoting/blob/master/xpolyrics/xpolyrics.py) 
+
+One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
+
+In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
+
+And using tag clouds for the lyrics will be cool (alpgarcia idea!) For example, like in [country music based on lyrics](http://www.johnwmillr.com/trucks-and-beer/).
+
+Similar project: https://github.com/ribeirojpn/follou
 
 
 ## Pending
@@ -103,18 +117,6 @@ Probably, with the experience from the above use cases an Editor for creating pl
 
 This editor must aid in using genrer, categories, artists, albums, tracks features, 
 markets, new releases ... to create the dreamed playlist for the user.
-
-### Lyrics Viewer
-
-https://github.com/acs/spoting/issues/5
-
-One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
-
-In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
-
-And using tag clouds for the lyrics will be cool (alpgarcia idea!) For example, like in [country music based on lyrics](http://www.johnwmillr.com/trucks-and-beer/).
-
-Similar project: https://github.com/ribeirojpn/follou
 
 ### Tracking concerts for your artists
 
