@@ -185,6 +185,8 @@ def find_user_playlists(token, max=0):
     max_playlists = 1000  # safe limit
     if max:
         max_playlists = max
+        if limit > max:
+            limit = max
 
     while offset < max_playlists:
         playlists_url = SPOTIFY_API_ME + "/playlists?limit=%i&offset=%i" % (limit, offset)
