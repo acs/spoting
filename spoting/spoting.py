@@ -169,6 +169,30 @@ def find_user_followed_artists(token):
 
     return artists
 
+
+def fetch_playlists_from_ids(token, playlists_ids):
+    """
+    Fetch the playlists information given their ids and the user auth token
+
+    :param token: Auth token
+    :param playlists_ids: list of playlists ids
+    :return: a playlist list
+    """
+
+    playlists = []
+
+    # First we need the user_id
+
+    user_id = find_user_profile(token)['id']
+
+    for playlist_id in playlists_ids:
+        playlist_url = SPOTIFY_API  + "/users/%s/playlists/%s" % (user_id, playlist_id)
+        res = query_api(token, playlist_url)
+        playlists.append(res)
+
+    return playlists
+
+
 def find_user_playlists(token, max=0):
     """
     Find playlists from the current user
@@ -199,12 +223,13 @@ def find_user_playlists(token, max=0):
     return playlists
 
 
-def find_user_playlist_tracks(token, playlist, max=0):
+def find_user_playlist_tracks(token, playlist=None, playlist_id=None, max=0):
     """
     Find all the tracks included in a playlist
 
     :param token: Auth token
     :param playlist: playlist spotify object from which to get the tracks
+    :param playlist_id: playlist id from which to get the tracks
     :param max: max number of tracks to return
     :return: All the playlist tracks
     """
@@ -216,16 +241,38 @@ def find_user_playlist_tracks(token, playlist, max=0):
     if max:
         max_tracks = max
 
+    if not playlist_id:
+        playlist_id = playlist['id']
+
     # First we need the user_id
 
     user_id = find_user_profile(token)['id']
 
     while offset < max_tracks:
-        tracks_url = SPOTIFY_API  + "/users/%s/playlists/%s/tracks?limit=%i&offset=%i" % (user_id, playlist['id'], limit, offset)
+        tracks_url = SPOTIFY_API  + "/users/%s/playlists/%s/tracks?limit=%i&offset=%i" % (user_id, playlist_id, limit, offset)
         res = query_api(token, tracks_url)
         if not res['items']:
             break
         tracks += res['items']
         offset += limit
+
+    return tracks
+
+def fetch_tracks_from_ids(token, tracks_ids):
+    """
+    Fetch the tracks information given their ids and the user auth token
+
+    :param token: Auth token
+    :param tracks_ids: list of track ids
+    :return: a tracks list
+    """
+
+    tracks = []
+
+
+    for track_id in tracks_ids:
+        track_url = SPOTIFY_API  + "/tracks/%s" % (track_id)
+        res = query_api(token, track_url)
+        tracks.append(res)
 
     return tracks
