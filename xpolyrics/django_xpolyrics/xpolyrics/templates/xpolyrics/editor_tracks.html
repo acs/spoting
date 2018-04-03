@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-sm-6">
+    <h2>Tracks</h2>
+  </div>
+  <div class="col-sm-6">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <form action="./select_track" method="post">
+      <fieldset id="select-track">
+        {% csrf_token %}
+        {% for field in tracks_form.state_fields %}
+        {{ field }}
+        {% endfor %}
+        {{ tracks_form.name.errors }}
+        <div class="form-group">
+          {{ tracks_form.id }}
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
