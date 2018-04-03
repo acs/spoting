@@ -73,8 +73,10 @@ class TracksForm(XpoLyricsForm):
         choices = ()
 
         for track in data.TracksData(self.state).fetch():
-            if (track.id, track.name) not in choices:
-                choices += ((track.id, track.name),)
+            if 'track' in track:
+                track = track['track']
+            if (track['id'], track['name']) not in choices:
+                choices += ((track['id'], track['name']),)
 
         choices = sorted(choices, key=lambda x: x[1])
 
@@ -86,20 +88,3 @@ class TracksForm(XpoLyricsForm):
 
         self.fields['id'] = forms.ChoiceField(label='Tracks',
                                               widget=self.select_widget_onclick, choices=self.list_choices())
-
-
-class LyricsForm(XpoLyricsForm):
-
-    @perfdata
-    def __init__(self, *args, **kwargs):
-        super(LyricsForm, self).__init__(*args, **kwargs)
-
-        choices = ()
-
-        for lyric in data.LyricsData(self.state).fetch():
-            choices += ((lyric.id, lyric),)
-            if len(choices) > MAX_ITEMS:
-                break
-
-        self.fields['id'] = forms.ChoiceField(label='Lyric',
-                                              widget=self.select_widget_onclick, choices=choices)

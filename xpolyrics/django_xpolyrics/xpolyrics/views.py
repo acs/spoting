@@ -10,9 +10,11 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.template import loader
 
-from spoting.spoting import collect_tokens, find_user_playlists, find_user_playlist_tracks
+from spoting.spoting import collect_tokens
+from spoting.genius import embed_lyrics
 
 from . import forms
+from . import data
 
 # TODO: OAuth2 web integration must retrieve this data
 # SPOTIFY config
@@ -54,20 +56,26 @@ def build_forms_context(state=None):
 
     playlists_form = forms.PlaylistsForm(state=state)
     tracks_form = forms.TracksForm(state=state)
-    lyrics_form = forms.LyricsForm(state=state)
+    lyrics = None
 
     if state:
         if state.playlists:
             playlists_form.initial['id'] = state.playlists[0]
         if state.tracks:
             tracks_form.initial['id'] = state.tracks[0]
-        if state.lyrics:
-            lyrics_form.initial['id'] = state.lyrics[0]
+            genius_data = next(data.LyricsData(state).fetch())
+            song_data = genius_data['response']['hits'][0]['result']
+            song_id = song_data['id']
+            song_url = song_data['url']
+            song_title = song_data['title']
+            song_author = song_data['primary_artist']['name']
+
+            lyrics = embed_lyrics(song_id, song_url, song_title, song_author)
 
     context = {
                "playlists_form": playlists_form,
                "tracks_form": tracks_form,
-               "lyrics_form": lyrics_form
+               "lyrics": lyrics
                }
     return context
 
@@ -118,7 +126,6 @@ class EditorState():
             # The form includes the state not changed to be propagated
             playlists_state = form.cleaned_data['playlists_state']
             tracks = form.cleaned_data['tracks_state']
-            lyrics = form.cleaned_data['lyrics_state']
 
             if self.playlists is None:
                 self.playlists = [playlists_state] if playlists_state else []
@@ -128,7 +135,7 @@ class EditorState():
                 self.lyrics = [lyrics] if lyrics else []
 
     def is_empty(self):
-        return not (self.playlists or self.tracks or self.lyrics)
+        return not (self.playlists or self.tracks)
 
     def initial_state(self):
         """ State to be filled in the forms so it is propagated
@@ -148,41 +155,7 @@ class EditorState():
         else:
             initial['tracks_state'] = None
 
-        if self.lyrics:
-            initial['lyrics_state'] = ";".join([str(lid) for lid in self.lyrics])
-        else:
-            initial['lyrics_state'] = None
-
         return initial
-
-
-class LyricsView():
-    @staticmethod
-    def select_lyrics(request):
-        error = None
-        template = 'xpolyrics/editor.html'
-        if request.method == 'POST':
-            form = forms.LyricsForm(request.POST)
-            if form.is_valid():
-                lyric_id = int(form.cleaned_data['id'])
-                lyrics = [lyric_id]
-                old_lyrics = form.cleaned_data['lyrics_state']
-                if old_lyrics == str(lyric_id):
-                    # Unselect the lyric
-                    form.cleaned_data['lyrics_state'] = None
-                    lyrics = None
-
-                state = EditorState(form=form, lyrics=lyrics)
-            else:
-                state = EditorState(form=form)
-                error = form.errors
-
-            context = build_forms_context(state)
-            context.update({"errors": error})
-            return shortcuts.render(request, template, context)
-
-        else:
-            return shortcuts.render(request, template, build_forms_context())
 
 
 class TrackView():
@@ -192,15 +165,16 @@ class TrackView():
         error = None
         template = 'xpolyrics/editor.html'
         if request.method == 'POST':
-            form = forms.TracksForm(request.POST)
+            spotify_token = collect_tokens(SPOTIFY_USER, SCOPES)
+            state = EditorState(spotify_token=spotify_token, tracks=[request.POST['id']])
+            form = forms.TracksForm(request.POST, state=state)
             if form.is_valid():
                 attr_id = form.cleaned_data['id']
                 tracks = [attr_id] if attr_id else []
                 old_tracks = form.cleaned_data['tracks_state']
                 if old_tracks == attr_id:
-                    # Unselect the track and its lyrics
+                    # Unselect the track
                     form.cleaned_data['tracks_state'] = None
-                    form.cleaned_data['lyrics_state'] = None
                     tracks = None
                 state = EditorState(form=form, tracks=tracks)
 
@@ -229,7 +203,6 @@ class PlaylistView():
         error = None
         template = 'xpolyrics/editor.html'
         if request.method == 'POST':
-
             spotify_token = collect_tokens(SPOTIFY_USER, SCOPES)
             spotify_state = EditorState(spotify_token=spotify_token)
             form = forms.PlaylistsForm(request.POST, state=spotify_state)
@@ -241,7 +214,6 @@ class PlaylistView():
                     # Unselect the playlist and its tracks and lyrics
                     form.cleaned_data['playlists_state'] = None
                     form.cleaned_data['tracks_state'] = None
-                    form.cleaned_data['lyrics_state'] = None
                     playlists = None
                 state = EditorState(playlists=playlists, form=form)
             else:
