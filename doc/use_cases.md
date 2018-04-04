@@ -44,11 +44,11 @@ The natural extension for this use case is to filter the new artists with differ
 
 https://github.com/acs/spoting/issues/5
 
-Implemented in: [xpolyrics]()https://github.com/acs/spoting/blob/master/xpolyrics/xpolyrics.py) 
+Implemented in: [xpolyrics](https://github.com/acs/spoting/blob/master/xpolyrics/) 
 
 One key aspect of a track are its lyrics. But Spotify does not offer any data about lyrics.
 
-In this use case we should find howto find the lyrics for a playlist and then think in ways to use them.
+In this use case we should find how to find the lyrics for a playlist and then think in ways to use them.
 
 And using tag clouds for the lyrics will be cool (alpgarcia idea!) For example, like in [country music based on lyrics](http://www.johnwmillr.com/trucks-and-beer/).
 
