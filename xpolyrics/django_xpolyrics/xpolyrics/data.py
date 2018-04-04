@@ -4,7 +4,7 @@ from spoting.genius import build_genius_token, find_genius_lyrics
 
 class PlaylistsData():
 
-    MAX_PLAY_LISTS = 5
+    MAX_PLAY_LISTS = 100
 
     def __init__(self, state):
         self.state = state
