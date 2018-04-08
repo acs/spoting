@@ -22,30 +22,53 @@
 # Authors:
 #   Alvaro del Castillo San Felix <acs@bitergia.com>
 #
+import argparse
+import json
+from time import time
 
 import requests
 
 from spoting.genius import build_genius_token, find_genius_artist, find_genius_artist_songs, scrap_lyrics
 
-AUTHOR='Mecano'
+def get_params():
+    parser = argparse.ArgumentParser(usage="usage: gelyrics.py [options]",
+                                     description="Collect songs data for an artist")
+    parser.add_argument('-a', '--artist', required=True, help="Name of the artist to collect songs for")
+    parser.add_argument('-l', '--lyrics', required=False, action='store_true', help="Collect also the lyrics for the songs")
 
+    return parser.parse_args()
 
 if __name__ == '__main__':
 
+    task_init = time()
+
+    args = get_params()
+
+    artist = args.artist
+    lyrics = True if args.lyrics else False
+
+    total_songs = 0
 
     # Get the Genius token
     token = build_genius_token()
 
-    print("Finding the lyrics for", AUTHOR)
+    print("Finding the lyrics for", artist)
 
     # Get the artist id
-    artist_id = find_genius_artist(token, AUTHOR)
+    artist_id = find_genius_artist(token, artist)
+
+    songs_with_lyrics = []
 
     # Get the songs for this artists and the lyrics for them
-    for song in find_genius_artist_songs(token, artist_id):
+    for song in find_genius_artist_songs(token, artist_id, lyrics=lyrics, unique=True):
         print("New song found", song['title'])
+        songs_with_lyrics.append(song)
 
-    # Cure the data removing duplicate songs (upper/lower case, larger titles ...
+        # Write the file after each song so if there are problems we don't loose data
+        with open(artist+"_songs.json", "w") as fsongs:
+            json.dump(songs_with_lyrics, fsongs, indent=True, ensure_ascii=False)
 
-    # And now get the lyrics for the songs
-    print("TODO: Get the lyrics for the songs")
+        total_songs += 1
+
+    print("%i songs collected in %0.3f sec" % (total_songs, time() - task_init))
+

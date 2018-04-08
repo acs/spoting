@@ -1,3 +1,5 @@
+from time import time
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -106,15 +108,17 @@ def find_genius_lyrics(token, song_name):
 
     return lyrics
 
-def find_genius_artist_songs(token, artist_id):
+def find_genius_artist_songs(token, artist_id, lyrics=True, unique=False):
     """
 
     :param token:  Genius user token
     :param artist_id: id of the artist to search songs for
+    :param lyrics: if True include the lyrics in a new field in the song JSON
+    :param unique: if True try to detect deuplicated songs and don't return them
     :return: list of Genius songs objects
     """
 
-    songs = []
+    songs_titles = []
     page = 1
     per_page = 50  # Max number per page
 
@@ -124,9 +128,21 @@ def find_genius_artist_songs(token, artist_id):
         res = requests.get(url, headers=headers)
         res_json = res.json()
 
-        songs += res_json['response']['songs']
+        songs = res_json['response']['songs']
 
         for song in songs:
+            if unique:
+                if song['title'].lower() in songs_titles:
+                    print("Not adding duplicated song:", song['title'])
+                    continue
+                else:
+                    songs_titles.append(song['title'].lower())
+            if lyrics:
+                task_init = time()
+                song['lyrics'] = scrap_lyrics(song['url'])
+                print("%s: Total lyrics collecting time ... %0.3f sec" %
+                    (song['title'], time() - task_init))
+
             yield song
 
         if res_json['response']['next_page']:
