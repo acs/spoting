@@ -64,11 +64,17 @@ if __name__ == '__main__':
         print("New song found", song['title'])
         songs_with_lyrics.append(song)
 
-        # Write the file after each song so if there are problems we don't loose data
-        with open(artist+"_songs.json", "w") as fsongs:
-            json.dump(songs_with_lyrics, fsongs, indent=True, ensure_ascii=False)
+        # Write the file after each 50 songs so if there are problems we don't loose data
+        if total_songs % 50 == 0:
+            with open(artist+"_songs.json", "w") as fsongs:
+                json.dump(songs_with_lyrics, fsongs, indent=True, ensure_ascii=False)
 
         total_songs += 1
+
+    # Write all songs to a file
+    with open(artist+"_songs.json", "w") as fsongs:
+            json.dump(songs_with_lyrics, fsongs, indent=True, ensure_ascii=False)
+
 
     print("%i songs collected in %0.3f sec" % (total_songs, time() - task_init))
 
