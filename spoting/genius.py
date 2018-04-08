@@ -61,6 +61,34 @@ def embed_lyrics(song_id, song_url, song_title, song_author):
 
     return embed_viewer
 
+def find_genius_artist(token, artist_name):
+    """
+
+    :param token: Genius user token
+    :param artist_name: name of the artists to find
+    :return: the Genius artist object
+    """
+
+    artist_id = None
+
+    url = GENIUS_API + "/search?q=" + artist_name
+    headers = {"Authorization": "Bearer " + token}
+    res = requests.get(url, headers=headers)
+    res_json = res.json()
+
+    # Time to find the artist from all the results
+    # Genius search for the artist_name in all places so some results
+    # could not be related to the artist_name, but for a song with the same name than the artist_name
+    for item in res_json['response']['hits']:
+        artist_found = item['result']['primary_artist']['name']
+        if artist_found == artist_name:
+            artist_id = item['result']['primary_artist']['id']
+            break
+
+    return artist_id
+
+
+
 
 def find_genius_lyrics(token, song_name):
     """
@@ -77,4 +105,33 @@ def find_genius_lyrics(token, song_name):
     lyrics = res.json()
 
     return lyrics
+
+def find_genius_artist_songs(token, artist_id):
+    """
+
+    :param token:  Genius user token
+    :param artist_id: id of the artist to search songs for
+    :return: list of Genius songs objects
+    """
+
+    songs = []
+    page = 1
+    per_page = 50  # Max number per page
+
+    while True:
+        url = GENIUS_API + "/artists/%s/songs?per_page=%i&page=%i" % (artist_id, per_page, page)
+        headers = {"Authorization": "Bearer " + token}
+        res = requests.get(url, headers=headers)
+        res_json = res.json()
+
+        songs += res_json['response']['songs']
+
+        for song in songs:
+            yield song
+
+        if res_json['response']['next_page']:
+            page = res_json['response']['next_page']
+        else:
+            break
+
 
