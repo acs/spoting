@@ -136,6 +136,16 @@ according to an assessment based on a tracks+artists+albums model.
 
 An initial approach could be to just get the top track from the top authors included in your preferences.
 
+### Analyzing the Lyrics ###
+
+https://github.com/acs/spoting/issues/9
+
+One interesting topic is to analyze the contents of lyrics from artists using NLP.
+
+With that we can track words most used by artirts, classify tracks using lyrics, analyze the relation between artists from their lyrics ...
+
+The first step for all of that it getting the lyrics from services like Genius. 
+
 ### Read Spotify Insights 
 
 [Spotify Insights](https://insights.spotify.com) has a lot of interesting use cases to get inspired.
