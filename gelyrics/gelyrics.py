@@ -24,6 +24,7 @@
 #
 import argparse
 import json
+import sys
 from time import time
 
 import requests
@@ -56,6 +57,10 @@ if __name__ == '__main__':
 
     # Get the artist id
     artist_id = find_genius_artist(token, artist)
+
+    if not artist_id:
+        print("Can not find %s in Genius" % artist)
+        sys.exit(1)
 
     songs_with_lyrics = []
 
