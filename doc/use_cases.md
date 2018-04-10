@@ -144,7 +144,9 @@ One interesting topic is to analyze the contents of lyrics from artists using NL
 
 With that we can track words most used by artirts, classify tracks using lyrics, analyze the relation between artists from their lyrics ...
 
-The first step for all of that it getting the lyrics from services like Genius. 
+The first step for all of that it getting the lyrics from services like Genius.
+
+And after that, once we have the Lyrics, we are going to organize them in classes or clusters. 
 
 ### Read Spotify Insights 
 
