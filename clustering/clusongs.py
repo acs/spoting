@@ -69,6 +69,7 @@ if __name__ == '__main__':
     # Requirements:
     #   >>> import nltk
     #   >>> nltk.download('punkt')
+    #   >>> nltk.download('stopwords')
     #
     with open('../datasets/bob_dylan_songs.json') as f:
         songs_json = json.load(f)
