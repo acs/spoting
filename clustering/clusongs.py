@@ -32,7 +32,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def process_text(text, stem=True):
     """ Tokenize text and stem words removing punctuation """
-    text = text.translate(string.punctuation)
+    table = str.maketrans({key: None for key in string.punctuation})
+    text = text.translate(table)
     tokens = word_tokenize(text)
 
     if stem:
