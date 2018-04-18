@@ -108,13 +108,14 @@ def find_genius_lyrics(token, song_name):
 
     return lyrics
 
-def find_genius_artist_songs(token, artist_id, lyrics=True, unique=False):
+def find_genius_artist_songs(token, artist_id, lyrics=True, unique=False, full=False):
     """
 
     :param token:  Genius user token
     :param artist_id: id of the artist to search songs for
     :param lyrics: if True include the lyrics in a new field in the song JSON
     :param unique: if True try to detect deuplicated songs and don't return them
+    :param full: if True use the "song" API to get the full data for a song (including album for example)
     :return: list of Genius songs objects
     """
 
@@ -137,6 +138,12 @@ def find_genius_artist_songs(token, artist_id, lyrics=True, unique=False):
                     continue
                 else:
                     songs_titles.append(song['title'].lower())
+            if full:
+                url = GENIUS_API + "/songs/%s" % (song['id'])
+                headers = {"Authorization": "Bearer " + token}
+                res = requests.get(url, headers=headers)
+                res_json = res.json()
+                song = res_json['response']['song']
             if lyrics:
                 task_init = time()
                 song['lyrics'] = scrap_lyrics(song['url'])
@@ -145,7 +152,7 @@ def find_genius_artist_songs(token, artist_id, lyrics=True, unique=False):
 
             yield song
 
-        if res_json['response']['next_page']:
+        if 'next_page' in res_json['response'] and res_json['response']['next_page']:
             page = res_json['response']['next_page']
         else:
             break
